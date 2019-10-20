@@ -35,6 +35,18 @@ public class Utilities {
         }
 
     }
+    static void write_string_to_file(String data, String file_name){
+        File file = new File(file_name);
+        try{
+            FileWriter fr = new FileWriter(file, false);
+            fr.write(data);
+            fr.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     static String file_to_string(String file_name){
         String data ="";

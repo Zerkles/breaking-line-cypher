@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public class GUI extends JFrame implements ActionListener {
     JButton btn_encrypt, btn_decrypt, btn_encrypt_file, btn_decrypt_file;
-    JTextArea txt_decrypted, txt_encrypted ;
+    JTextArea txt_decrypted, txt_encrypted;
     JTextArea txt_levelled;
     JLabel txt_input_info, txt_heights_info, txt_position_info;
     JTextField edt_input_decrypted, edt_input_heights, edt_input_position;
@@ -16,10 +16,10 @@ public class GUI extends JFrame implements ActionListener {
     JScrollPane sp_levelled;
     JFileChooser jfc_encrypt, jfc_decrypt;
 
-    static String encrypted_string = "";
+    static String last_encrypted_string = "";
 
     GUI() {
-        setSize(1080, 960);
+        setSize(1080, 845);
         setTitle("Crypto");
         setLayout(null);
 
@@ -50,18 +50,18 @@ public class GUI extends JFrame implements ActionListener {
         chb_Visualization.setBounds(txt_position_info.getX(), edt_input_position.getY() + edt_input_position.getHeight() + 5, 200, 20);
 
         btn_encrypt = new JButton("ENCRYPT");
-        btn_encrypt.setBounds(window.width / 2 , chb_Visualization.getY() + chb_Visualization.getHeight() + 10, 150, 20);
+        btn_encrypt.setBounds(window.width / 2, chb_Visualization.getY() + chb_Visualization.getHeight() + 10, 150, 20);
         btn_encrypt.addActionListener(this);
 
         btn_encrypt_file = new JButton("Choose File...");
-        btn_encrypt_file.setBounds(btn_encrypt.getX() - btn_encrypt.getWidth() -5 ,btn_encrypt.getY(), btn_encrypt.getWidth(), btn_encrypt.getHeight());
+        btn_encrypt_file.setBounds(btn_encrypt.getX() - btn_encrypt.getWidth() - 5, btn_encrypt.getY(), btn_encrypt.getWidth(), btn_encrypt.getHeight());
         btn_encrypt_file.addActionListener(this);
 
         chb_encrypt_file = new JCheckBox("Encrypt file");
-        chb_encrypt_file.setBounds(btn_encrypt_file.getX() - 100 - 5, btn_encrypt.getY() , 100, btn_encrypt_file.getHeight());
+        chb_encrypt_file.setBounds(btn_encrypt_file.getX() - 100 - 5, btn_encrypt.getY(), 100, btn_encrypt_file.getHeight());
 
         chb_encrypt_text_to_file = new JCheckBox("Write text encryption to file");
-        chb_encrypt_text_to_file.setBounds(btn_encrypt.getX() + btn_encrypt.getWidth() + 5, btn_encrypt.getY() , 200, btn_encrypt.getHeight());
+        chb_encrypt_text_to_file.setBounds(btn_encrypt.getX() + btn_encrypt.getWidth() + 5, btn_encrypt.getY(), 200, btn_encrypt.getHeight());
 
         txt_encrypted = new JTextArea("Encrypted data:");
         txt_encrypted.setBounds(txt_input_info.getX(), btn_encrypt.getY() + btn_encrypt.getHeight() + 10, Double.valueOf(window.getWidth()).intValue() - 30, 200);
@@ -72,14 +72,14 @@ public class GUI extends JFrame implements ActionListener {
         btn_decrypt.addActionListener(this);
 
         btn_decrypt_file = new JButton("Choose File...");
-        btn_decrypt_file.setBounds(btn_decrypt.getX() - btn_decrypt.getWidth() -5 ,btn_decrypt.getY(), btn_decrypt.getWidth(), btn_decrypt.getHeight());
+        btn_decrypt_file.setBounds(btn_decrypt.getX() - btn_decrypt.getWidth() - 5, btn_decrypt.getY(), btn_decrypt.getWidth(), btn_decrypt.getHeight());
         btn_decrypt_file.addActionListener(this);
 
         chb_decrypt_file = new JCheckBox("Decrypt file");
-        chb_decrypt_file.setBounds(btn_decrypt_file.getX() - 100 - 5, btn_decrypt.getY() , 100, btn_decrypt_file.getHeight());
+        chb_decrypt_file.setBounds(btn_decrypt_file.getX() - 100 - 5, btn_decrypt.getY(), 100, btn_decrypt_file.getHeight());
 
         chb_decrypt_text_to_file = new JCheckBox("Write text decryption to file");
-        chb_decrypt_text_to_file.setBounds(btn_decrypt.getX() + btn_decrypt.getWidth() + 5, btn_decrypt.getY() , 200, 20);
+        chb_decrypt_text_to_file.setBounds(btn_decrypt.getX() + btn_decrypt.getWidth() + 5, btn_decrypt.getY(), 200, 20);
 
         txt_decrypted = new JTextArea("Decrypted data:");
         txt_decrypted.setBounds(txt_input_info.getX(), btn_decrypt.getY() + btn_decrypt.getHeight() + 10, Double.valueOf(window.getWidth()).intValue() - 30, 200);
@@ -124,71 +124,89 @@ public class GUI extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Object event_source = e.getSource();
-        Vector<Integer> heights = Utilities.string_array_to_integer_vector(edt_input_heights.getText().split(","));;
+        Vector<Integer> heights = new Vector<>();
+        if (!edt_input_heights.getText().isEmpty()) {
+            if (heights.size() == 1) {
+                heights.add(Integer.valueOf(edt_input_heights.getText()));
+            } else {
+                heights = Utilities.string_array_to_integer_vector(edt_input_heights.getText().split(","));
+            }
+        }
 
         Position pos;
-        if (edt_input_position.getText().equals("TOP")){
+        if (edt_input_position.getText().equals("TOP")) {
             pos = Position.TOP;
-        }
-        else{
-            pos= Position.BOTTOM;
+        } else {
+            pos = Position.BOTTOM;
         }
 
         if (event_source == btn_encrypt) {
 
-            String data_from_input = edt_input_decrypted.getText();
+            String visualization = "";
+            String encrypted_string = "";
 
-            if (chb_Visualization.isSelected()) {
-                String[] result;
-
-                result = CryptoLib.encrypt(data_from_input, heights, pos, true);
-
-                encrypted_string = result[0];
-                String visualization = result[1];
-                txt_encrypted.setText("Encrypted data:\n" + encrypted_string);
-
-                txt_levelled.setText("Visualization:\n"+ visualization);
-                Utilities.append_string_to_file(visualization,"Visualization.txt");
-
-                add(sp_levelled);
-            } else if (!chb_encrypt_file.isSelected()) {
-                encrypted_string = CryptoLib.encrypt(data_from_input, heights, pos);
-                txt_encrypted.setText("Encrypted data:\n" + encrypted_string);
-            }
-
-            if(chb_encrypt_text_to_file.isSelected()){
-                Utilities.append_string_to_file(encrypted_string,"encryption.blc");
-            }
-
-            if(chb_encrypt_file.isSelected()){
+            if (chb_encrypt_file.isSelected()) {
                 File f = jfc_encrypt.getSelectedFile();
-                String data_from_file = Utilities.file_to_string(f.getName());
-                encrypted_string = CryptoLib.encrypt(data_from_file,heights,pos);
-                Utilities.append_string_to_file(encrypted_string,f.getName()+".blc");
+                String data_from_file = Utilities.file_to_string(f.getPath());
+
+                if (chb_Visualization.isSelected()) {
+                    String[] result = CryptoLib.encrypt(data_from_file, heights, pos, true);
+                    encrypted_string = result[0];
+                    visualization = result[1];
+
+                    Utilities.write_string_to_file(visualization, "visualization.txt");
+
+                } else {
+                    encrypted_string = CryptoLib.encrypt(data_from_file, heights, pos);
+
+                }
+
+                Utilities.write_string_to_file(encrypted_string, f.getName() + ".blc");
+            } else {
+                String data_from_input = edt_input_decrypted.getText();
+
+                if (chb_Visualization.isSelected()) {
+                    String[] result = CryptoLib.encrypt(data_from_input, heights, pos, true);
+                    encrypted_string = result[0];
+                    last_encrypted_string = encrypted_string;
+                    visualization = result[1];
+
+                    txt_levelled.setText("Visualization:\n" + visualization);
+                    add(sp_levelled);
+                    Utilities.write_string_to_file(visualization, "visualization.txt");
+                } else {
+                    encrypted_string = CryptoLib.encrypt(data_from_input, heights, pos);
+                    last_encrypted_string = encrypted_string;
+                }
+                if (chb_encrypt_text_to_file.isSelected()) {
+                    Utilities.write_string_to_file(encrypted_string, "encryption.blc");
+                }
+                txt_encrypted.setText("Encrypted data:\n" + encrypted_string);
             }
+
+            Utilities.write_string_to_file("Start Position: " + pos + "\nLevels List: " + heights, "latest_key.txt");
+
         } else if (event_source == btn_decrypt) {
-            String decrypted_string="Decrypted data:\n";
-            if((!chb_decrypt_file.isSelected())){
-                decrypted_string = CryptoLib.decrypt(encrypted_string, heights, pos);
+            String decrypted_string = "Decrypted data:\n";
+            if ((!chb_decrypt_file.isSelected())) {
+                decrypted_string = CryptoLib.decrypt(last_encrypted_string, heights, pos);
                 txt_decrypted.setText("Decrypted data:\n" + decrypted_string);
             }
 
-            if(chb_decrypt_text_to_file.isSelected()){
-                Utilities.append_string_to_file(decrypted_string,"decryption.blc");
+            if (chb_decrypt_text_to_file.isSelected()) {
+                Utilities.write_string_to_file(decrypted_string, "decryption.txt");
             }
 
-            if(chb_decrypt_file.isSelected()){
+            if (chb_decrypt_file.isSelected()) {
                 File f = jfc_decrypt.getSelectedFile();
-                String data_from_file = Utilities.file_to_string(f.getName());
-                decrypted_string = CryptoLib.decrypt(data_from_file,heights,pos);
-                Utilities.append_string_to_file(decrypted_string,f.getName().replace(".blc",""));
+                String data_from_file = Utilities.file_to_string(f.getPath());
+                decrypted_string = CryptoLib.decrypt(data_from_file, heights, pos);
+                Utilities.write_string_to_file(decrypted_string, "decrypted_" + f.getName().replace(".blc", ""));
             }
-        }
-        else if (event_source == btn_encrypt_file) {
+        } else if (event_source == btn_encrypt_file) {
             jfc_encrypt.showOpenDialog(null);
             btn_encrypt_file.setText(jfc_encrypt.getSelectedFile().getName());
-        }
-        else if (event_source == btn_decrypt_file) {
+        } else if (event_source == btn_decrypt_file) {
             jfc_decrypt.showOpenDialog(null);
             btn_decrypt_file.setText(jfc_decrypt.getSelectedFile().getName());
         }
