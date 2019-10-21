@@ -26,14 +26,14 @@ public class GUI extends JFrame implements ActionListener {
         Rectangle window = this.getBounds();
 
         txt_input_info = new JLabel("Enter text to encrypt:");
-        txt_input_info.setBounds(10, 10, 130, 20);
+        txt_input_info.setBounds(10, 10, 120, 20);
 
-        int text_input_x = txt_input_info.getX() + txt_input_info.getWidth() + 10;
+        int text_input_x = txt_input_info.getX() + txt_input_info.getWidth() + 5;
         edt_input_decrypted = new JTextField();
         edt_input_decrypted.setBounds(text_input_x, txt_input_info.getY(), Double.valueOf(window.getWidth()).intValue() - text_input_x - 20, txt_input_info.getHeight());
 
-        txt_heights_info = new JLabel("Enter heights (divided by ','):");
-        txt_heights_info.setBounds(txt_input_info.getX(), txt_input_info.getY() + txt_input_info.getHeight() + 5, 160, txt_input_info.getHeight());
+        txt_heights_info = new JLabel("Enter levels list (divided with ','):");
+        txt_heights_info.setBounds(txt_input_info.getX(), txt_input_info.getY() + txt_input_info.getHeight() + 5, 180, txt_input_info.getHeight());
 
         int heights_input_x = txt_heights_info.getX() + txt_heights_info.getWidth() + 10;
         edt_input_heights = new JTextField();
