@@ -1,3 +1,7 @@
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.rmi.server.ExportException;
 import java.util.Vector;
 
 public class Utilities {
@@ -19,11 +23,39 @@ public class Utilities {
         return integers_vector;
     }
 
-    static void string_to_file(String data, String file_name){
+    static void append_string_to_file(String data, String file_name){
+        File file = new File(file_name);
+        try{
+            FileWriter fr = new FileWriter(file, true);
+            fr.write(data);
+            fr.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+    static void write_string_to_file(String data, String file_name){
+        File file = new File(file_name);
+        try{
+            FileWriter fr = new FileWriter(file, false);
+            fr.write(data);
+            fr.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
 
-    static void file_to_string(String data, String file_name){
+    static String file_to_string(String file_name){
+        String data ="";
+        try{
+            data = new String (Files.readAllBytes(Paths.get(file_name)));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
+        return data;
     }
 }

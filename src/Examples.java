@@ -3,14 +3,14 @@ import javax.swing.*;
 
 public class Examples {
     public static void main(String[] args) {
-        test();
-
-//        GUI okno = new GUI();
-//        okno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        okno.setVisible(true);
+        GUI okno = new GUI();
+        okno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        okno.setVisible(true);
+        okno.setResizable(false);
+        //test();
     }
 
-    static void test(){
+    public static void test(){
         String text_to_encrypt = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
         System.out.println("TEKST:" + text_to_encrypt);
 
@@ -25,6 +25,7 @@ public class Examples {
         GUI okno = new GUI();
         okno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         okno.setVisible(true);
+        okno.setResizable(false);
         okno.edt_input_decrypted.setText(text);
         okno.edt_input_heights.setText(heights);
     }
